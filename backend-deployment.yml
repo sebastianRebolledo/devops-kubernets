@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+   name: backend-deployment
+spec:
+   replicas: 2
+   selector:
+      matchLabels:
+         app: backendservice
+   template:
+       metadata:
+         labels:
+           app: backendservice
+       spec:
+         containers:
+           - name: backendservice
+             image: sereme98/backend2
+             ports:
+               - containerPort: 8089
+             env:
+               - name: DATABASE_URL
+                 value: http://admin:password@sdatabase:5984
+

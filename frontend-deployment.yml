@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+   name: frontend-deployment
+   labels:
+     app: frontendservice
+spec:
+   #minReadySeconds: 3
+   #strategy:
+     #type: RollingUpdate
+     #rollingUpdate: 
+        #maxSurge: 1
+        #maxUnavailable: 1
+   replicas: 1
+   selector:
+      matchLabels:
+         app: frontendservice
+   template:
+       metadata:
+         namespace: icesihealth
+         labels:
+           app: frontendservice
+       spec:
+         containers:
+           - name: frontendservice
+             image: sereme98/frontend2
+             ports:
+               - containerPort: 8080
+             env:
+               - name: BACKEND_HOST
+                 value: BACKENDSERVICE-SERVICE_SERVICE_HOST
+               - name: API_URL
+                 value: http://"+${BACKENDSERVICE-SERVICE_SERVICE_HOST}+":8089/ 

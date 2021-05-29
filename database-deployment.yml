@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+   name: database-deployment
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: database-service
+   template:
+       metadata:
+         labels:
+           app: database-service
+       spec:
+         containers:
+           - name: container-couchdb
+             image: couchdb
+             ports:
+               - containerPort: 5984
+             env:
+               - name: COUCHDB_USER
+                 value: admin
+               - name: COUCHDB_PASSWORD
+                 value: password
