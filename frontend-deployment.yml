@@ -17,7 +17,6 @@ spec:
          app: frontendservice
    template:
        metadata:
-         namespace: icesihealth
          labels:
            app: frontendservice
        spec:
@@ -28,6 +27,6 @@ spec:
                - containerPort: 8080
              env:
                - name: BACKEND_HOST
-                 value: BACKENDSERVICE-SERVICE_SERVICE_HOST
+                 value: sbackend
                - name: API_URL
-                 value: http://"+${BACKENDSERVICE-SERVICE_SERVICE_HOST}+":8089/ 
+                 value: http://"sbackend":8089/ 

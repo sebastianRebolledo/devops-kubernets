@@ -1,0 +1,103 @@
+---
+- hosts: localhost
+  tasks:
+
+    - name: Get a list of all pods from any namespace.
+      community.kubernetes.k8s_info:
+          kind: Pod
+      register: pod_list
+
+    - name: Get info of pod backend
+      community.kubernetes.k8s_info:
+          kind: Pod
+          label_selectors:
+            - app = backendservice
+      register: result
+
+    - name: Print return information from the previous task
+      ansible.builtin.debug:
+          var: result
+  
+    #- name: Does pod bakcned exists?
+     # ansible.builtin.debug:
+      #   var: result
+       #  msg: "The container {{ 'exists' if result.exists else 'does not exist' }}"
+
+    - name: Delete pod backend
+      community.kubernetes.k8s:
+          state: absent
+          kind: Pod
+          name: backend-deployment
+          namespace: default
+          #label_selectors:
+          #name: backend-deployment-77bc66d954-q8nxq
+            #- app = backendservice
+      #when: result.exists
+
+    - name: Execute new deployment backend
+      community.kubernetes.k8s:
+          state: present
+          namespace: default
+          src: ./backend-deployment.yml
+   
+   # FRONTEND
+     - name: Get info of pod frontend
+       community.kubernetes.k8s_info:
+          kind: Pod
+          label_selectors:
+            - app = frontendservice
+       register: resultfront
+
+      - name: Print return information from task frontend
+        ansible.builtin.debug:
+          var: resultffront
+      
+        #- name: Does pod frontend exists?
+     # ansible.builtin.debug:
+      #   var: result
+       #  msg: "The container {{ 'exists' if result.exists else 'does not exist' }}"
+
+    - name: Delete pod frontend
+      community.kubernetes.k8s:
+          state: absent
+          kind: Pod
+          name: frontend-deployment
+          namespace: default
+          #label_selectors:
+          #name: backend-deployment-77bc66d954-q8nxq
+            #- app = backendservice
+      #when: result.exists
+
+    - name: Execute new deployment frontend
+      community.kubernetes.k8s:
+          state: present
+          namespace: default
+          src: ./frontend-deployment.yml
+
+
+
+    - name: Get info of pod database
+      community.kubernetes.k8s_info:
+          kind: Pod
+          label_selectors:
+            - app = database-service
+      register: resultdatabase
+
+      - name: Print return information from task database
+        ansible.builtin.debug:
+          var: result_database
+      
+        #- name: Does pod database exists?
+     # ansible.builtin.debug:
+      #   var: result
+       #  msg: "The container {{ 'exists' if result_database.exists else 'does not exist' }}"
+
+
+    - name: Execute new deployment frontend
+      community.kubernetes.k8s:
+          state: present
+          namespace: default
+          src: ./frontend-deployment.yml
+      when: result_database.does not exist
+
+

@@ -1,0 +1,54 @@
+ name: Create service Database Couchdb
+  community.kubernets.k8s:
+     state: present
+     definition:
+        api_version: v1
+        kind: Service
+        metadata: 
+          name: sdatabase2
+          labels:
+             app: database-service
+        spec: 
+          selector: 
+             app: database-service
+          ports:
+             - protocol: TCP
+               port: 5984
+               targetPort: 5984
+
+- name: Create service backend icesihealth
+  community.kubernets.k8s:
+     state: present
+     definition:
+        api_version: v1
+        kind: Service
+        metadata: 
+          name: sbackend
+          labels:
+             app: backendservice
+        spec: 
+          selector: 
+             app: backendservice
+          ports:
+             - protocol: TCP
+               port: 8089
+               targetPort: 8089
+
+
+- name: Create service frontend icesihealth
+  community.kubernets.k8s:
+     state: present
+     definition:
+        api_version: v1
+        kind: Service
+        metadata: 
+          name: sfrontend
+          labels:
+             app: frontendservice
+        spec: 
+          selector: 
+             app: frontendservice
+          ports:
+             - protocol: TCP
+               port: 8080
+               targetPort: 8080

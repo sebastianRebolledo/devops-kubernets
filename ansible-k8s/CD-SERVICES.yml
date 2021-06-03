@@ -1,0 +1,66 @@
+---
+- hosts: localhost
+  tasks:
+
+    - name: Get an existing Service Database 
+      community.kubernetes.k8s_info:
+          api_version: v1
+          kind: Service
+          name: sdatabase
+          namespace: default
+      register: sdatabase_info
+
+    #- name: Does Service Database exists?
+     # ansible.builtin.debug:
+      #   var: result
+       #  msg: "The container {{ 'exists' if sdatabase_info.exists else 'does not exist' }}"
+      
+    - name: Execute new Service database
+      community.kubernetes.k8s:
+          state: present
+          namespace: default
+          src: ./database-deployment.yml
+      when: sdatabase_info.does not exist
+      
+
+
+    - name: Get an existing Service Backend
+      community.kubernetes.k8s_info:
+          api_version: v1
+          kind: Service
+          name: sbackend
+          namespace: default
+      register: sbackend_info
+
+    #- name: Does Service Database exists?
+     # ansible.builtin.debug:
+      #   var: result
+       #  msg: "The container {{ 'exists' if sbackend_info.exists else 'does not exist' }}"
+   
+    - name: Execute new Service Backend
+      community.kubernetes.k8s:
+          state: present
+          namespace: default
+          src: ./backend-deployment.yml
+      when: sbackend_info.does not exist
+
+
+    - name: Get an existing Service Frontend
+      community.kubernetes.k8s_info:
+          api_version: v1
+          kind: Service
+          name: sdatabase
+          namespace: default
+      register: sfrontend_info
+
+      #- name: Does Service Database exists?
+     # ansible.builtin.debug:
+      #   var: result
+       #  msg: "The container {{ 'exists' if sfrontend_info.exists else 'does not exist' }}"
+   
+    - name: Execute new Service Backend
+      community.kubernetes.k8s:
+          state: present
+          namespace: default
+          src: ./backend-deployment.yml
+      when: sfrontend_info.does not exist
